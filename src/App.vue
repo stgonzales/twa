@@ -27,7 +27,6 @@ export default {
         {icon:'mdi-account-circle',text: 'Users', route: '/users'},
         {icon: 'mdi-settings', text: 'Settings', route: '/settings'}
       ]
-
     }
   }
 };

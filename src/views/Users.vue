@@ -11,8 +11,12 @@
     color="teal lighten-1" 
     class="white--text" 
     @click="newUser">
-      <v-icon>mdi-plus</v-icon>
-      New User</v-btn>            
+      <v-icon>mdi-plus</v-icon> New User</v-btn>            
+    <v-btn 
+    color="teal lighten-1" 
+    class="white--text" 
+    @click="updateList">
+      <v-icon>mdi-update</v-icon> Update List</v-btn>            
     </v-container>
     
     <v-divider
@@ -45,6 +49,9 @@
               <div>{{user.admin?"Yes":"No"}}</div>
             </v-flex>
           </v-layout>
+          <v-flex>
+            <v-icon @click="deletUser(user.id)">mdi-close</v-icon>
+          </v-flex>
         </v-layout>
       </v-card>
     </v-container>  
@@ -59,26 +66,34 @@ export default {
   name: 'Users',
   data(){
     return{
-      users: null,
-      componentKey: 0
+      users: null
     }
   },
-  beforeCreate(){
-    axios.get('http://localhost:3000/users')
+  created(){
+    axios.get('http://localhost:3060/users')
       .then(res => this.users = res.data)
       .catch(err => console.log(err))
   },
-  beforeUpdate(){
-    axios.get('http://localhost:3000/users')
-      .then(res => this.users = res.data)
-      .catch(err => console.log(err))
-  },
+  // beforeUpdate(){
+  //   axios.get('http://localhost:3060/users')
+  //     .then(res => this.users = res.data)
+  //     .catch(err => console.log(err))
+  //},
   methods:{
     newUser: function(){
       eventBus.$emit('showDiagNewuser')
     },
-    updateUser: function(){
-      this.componentKey += 1
+    updateList: function(){
+      axios.get('http://localhost:3060/users')
+      .then(res => this.users = res.data)
+      .catch(err => console.log(err))
+    },
+    deletUser: function(id){
+      axios.delete(`http://localhost:3060/delete-user/${id}`)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => console.log(err))
     }
   }
 }
