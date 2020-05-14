@@ -1,5 +1,5 @@
 <template>
-  <v-dialog app v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+  <v-dialog app v-model="showDiag" fullscreen hide-overlay transition="dialog-bottom-transition">
       <v-card>
         <v-toolbar dark color="teal lighten-1">
           <v-btn icon dark @click="closeForm" >
@@ -8,7 +8,7 @@
           <v-toolbar-title>New User</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="saveNewUser">Save</v-btn>
+            <v-btn dark text @click="saveUser">Save</v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-content>
@@ -31,42 +31,40 @@
 </template>
 
 <script>
-import { eventBus } from '../../main'
-import axios from 'axios'
+import { mapActions } from 'vuex'
 
 export default {
-
+  props:{
+    showDiag: Boolean
+  },
   data(){
     return{
-      dialog: false,
       data:{
         name: "",
         email: ""
       }
     }
   },
-  created(){
-    eventBus.$on('showDiagNewuser', ()=>{
-      this.dialog = true      
-    })
+  computed: {
+    ...mapActions([
+      'newUserDialog',
+      'saveNewUser'
+    ])
   },
   methods:{
-    saveNewUser: function(){
-      
-      axios.post('http://localhost:3000/new-user', this.data)
-            .then((res) => {
-              console.log(res.data)
-              this.closeForm()
-            })
-            .catch(err => console.log(err))
-      
-    },
-    closeForm: function(){
-      this.dialog = false
+    cleanForm: function(){
       this.data.name = null
       this.data.email = null
-      eventBus.$emit('reRenderComponent')
-    }
+    },
+    closeForm: function(){
+      this.cleanForm()
+      this.newUserDialog
+    },
+    saveUser: function(e){
+      e.preventDefault()
+      this.saveNewUser(this.data)
+      this.cleanForm()
+    },
   }
 }
 </script>

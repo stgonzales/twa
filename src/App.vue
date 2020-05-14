@@ -3,8 +3,8 @@
     <Navbar :menuLinks="links"/>
     <v-content class="mt-4 blue-grey lighten-5">
       <router-view></router-view>
-      <Newuser />
     </v-content>
+    <DeleteConfirmationAlert />
     <!--<v-content class="mt-8">
       <Footer/>
     </v-content>-->
@@ -13,11 +13,11 @@
 
 <script>
 import Navbar from '@/components/Navbar'
-import Newuser from '@/views/dialogs/NewUser'
+import DeleteConfirmationAlert from './views/dialogs/ConfirmDeleteAlert'
 
 export default {
   name: 'App',
-  components: { Navbar, Newuser},
+  components: { Navbar, DeleteConfirmationAlert},
   data(){
     return{
       // eslint-disable-next-line vue/no-dupe-keys
