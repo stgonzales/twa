@@ -2,11 +2,12 @@ import axios from 'axios'
 
 const state = {
         users: [],
-        seletecUser: [],
+        selectedUser: [],
         loadingStatus: false,
         error: null,
         newUserDialog: false,
-        deactivateUserDialog: false
+        deactivateUserDialog: false,
+        userUpdateDialog: false
     }
 
 const getters = {
@@ -15,7 +16,8 @@ const getters = {
         getLoadingStatus: state => {return state.loadingStatus},
         getNewuserDialogStatus: state => {return state.newUserDialog},
         getdeactiveuserDialogStatus: state => {return state.deactivateUserDialog},
-        selectedUser: state => {return state.seletecUser}
+        selectedUser: state => {return state.selectedUser},
+        userUpdateDialog: state => {return state.userUpdateDialog}
     }
     
 const actions = {
@@ -54,6 +56,16 @@ const actions = {
             .catch(err => console.log(err))
         },
 
+        async updateUser({dispatch}, user){
+            axios.put('http://localhost:3060/updt-user', user.data)
+                .then(()=>{
+                    alert(`User updated!`)
+                    dispatch('fetchUsers')
+                    dispatch('closeUserDetailDialog')
+                })
+                .catch(err => {return console.log(err)})
+        },
+
         newUserDialog({commit}){
             commit('SET_NEWUSER_DIALOG_STATUS')
         },
@@ -65,6 +77,15 @@ const actions = {
 
         closeConfirmationDiag({commit}){
             commit('SET_DEACTIVATEUSER_DIALOG')
+        },
+
+        userDetailDialog(context, user){
+            context.commit('SHOW_USERDETAIL_DIALOG')
+            context.commit('SET_SELECTED_USER', user)
+        },
+
+        closeUserDetailDialog({commit}){
+            commit('SHOW_USERDETAIL_DIALOG')
         }
     }
 
@@ -88,7 +109,10 @@ const mutations = {
             state.deactivateUserDialog = !state.deactivateUserDialog
         },
         SET_SELECTED_USER: (state, user) => {
-            state.seletecUser = user
+            state.selectedUser = user
+        },
+        SHOW_USERDETAIL_DIALOG: (state) => {
+            state.userUpdateDialog = !state.userUpdateDialog
         }
     }
 
