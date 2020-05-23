@@ -1,4 +1,5 @@
 import axios from 'axios'
+import EventBus from '../../EventBus'
 
 const state = {
         users: [],
@@ -38,30 +39,40 @@ const actions = {
             commit('SET_LOADING_STATUS', true)
             await axios.post('http://localhost:3060/new-user', user.data)
                 .then((res) => {
-                    alert(`User ${res.data.name} created!`)
-                    dispatch('newUserDialog')
-                    commit('SET_LOADING_STATUS', false)
-                    commit('ADD_NEWUSER', res.data)
+                    if(res.data.message) {
+                        commit('SET_LOADING_STATUS', false)
+                        alert(res.data.message)
+                        console.log([res, res.data.message])
+                    }else{
+                        alert(`User ${res.data.name} created!`)
+                        dispatch('newUserDialog')
+                        commit('SET_LOADING_STATUS', false)
+                        commit('ADD_NEWUSER', res.data)
+                        EventBus.$emit('cleanNewUserForm');
+                    }
+                    
                 })
                 .catch(err => console.log(err))
         },
 
-        async deleteUser({dispatch}, userId){
+        async deleteUser({commit, dispatch}, userId){
             axios.delete(`http://localhost:3060/delete-user/${userId}`)
             .then(() => {
                 alert(`User deleted!`)
                 dispatch('fetchUsers')
                 dispatch('closeConfirmationDiag')
+                commit('CLEAN_SELECTED_USER')
             })
             .catch(err => console.log(err))
         },
 
-        async updateUser({dispatch}, user){
+        async updateUser({commit, dispatch}, user){
             axios.put('http://localhost:3060/updt-user', user.data)
                 .then(()=>{
                     alert(`User updated!`)
                     dispatch('fetchUsers')
                     dispatch('closeUserDetailDialog')
+                    commit('CLEAN_SELECTED_USER')
                 })
                 .catch(err => {return console.log(err)})
         },
@@ -110,6 +121,9 @@ const mutations = {
         },
         SET_SELECTED_USER: (state, user) => {
             state.selectedUser = user
+        },
+        CLEAN_SELECTED_USER: (state) => {
+            state.selectedUser = []
         },
         SHOW_USERDETAIL_DIALOG: (state) => {
             state.userUpdateDialog = !state.userUpdateDialog

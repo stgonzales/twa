@@ -21,6 +21,9 @@
               <v-col cols="12">
                 <v-text-field v-model="data.email" label="Email*" required></v-text-field>
               </v-col>
+              <v-col cols="12">
+                <v-checkbox v-model="data.admin" label="Admin(?)"></v-checkbox>
+              </v-col>
             </v-row>
           </v-container>
           <small>*indicates required field</small>
@@ -32,6 +35,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import EventBus from '../../EventBus'
 
 export default {
   props:{
@@ -40,8 +44,10 @@ export default {
   data(){
     return{
       data:{
-        name: "",
-        email: ""
+        name: null,
+        email: null,
+        admin: false,
+        active: true
       }
     }
   },
@@ -51,10 +57,16 @@ export default {
       'saveNewUser'
     ])
   },
+  mounted() {
+    EventBus.$on('cleanNewUserForm', () => {
+      this.cleanForm()
+    });
+  },
   methods:{
     cleanForm: function(){
       this.data.name = null
       this.data.email = null
+      this.data.admin = false
     },
     closeForm: function(){
       this.cleanForm()
@@ -63,7 +75,6 @@ export default {
     saveUser: function(e){
       e.preventDefault()
       this.saveNewUser(this.data)
-      this.cleanForm()
     },
   }
 }

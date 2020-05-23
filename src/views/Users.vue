@@ -56,17 +56,21 @@
             </v-avatar>
           </v-flex>
           <v-layout row wrap class="pl-1 ml-4">
-            <v-flex xs12 md5>
+            <v-flex xs12 md4>
               <div class="caption grey--text">User name</div>
               <div>{{ user.name }}</div>
             </v-flex>
-            <v-flex xs12 sm6 md5>
+            <v-flex xs12 sm4 md4>
               <div class="caption grey--text">e-mail</div>
               <div>{{ user.email }}</div>
             </v-flex>
-            <v-flex xs12 sm6 md2>
+            <v-flex xs12 sm4 md2>
               <div class="caption grey--text">Admin(?)</div>
-              <div>{{ user.admin ? "Yes" : "No" }}</div>
+              <div>{{ user.admin == 1 ? "Yes" : "No" }}</div>
+            </v-flex>
+            <v-flex xs12 sm4 md2>
+              <div class="caption grey--text">Active(?)</div>
+              <div>{{ user.admin == 1 ? "Yes" : "No" }}</div>
             </v-flex>
           </v-layout>
         </v-layout>
