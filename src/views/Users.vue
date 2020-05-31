@@ -4,10 +4,10 @@
     <v-divider light> </v-divider>
 
     <v-container class="my-1">
-      <v-btn color="teal lighten-1" class="white--text" @click="newUserDialog">
+      <v-btn color="teal lighten-1" class="white--text" @click="openNewUserWindow">
         <v-icon>mdi-plus</v-icon> New User</v-btn
       >
-      <v-btn fab small dark color="teal lighten-1" class="mx-3" @click="fetchUsers">
+      <v-btn fab small dark color="teal lighten-1" class="mx-3" @click="fetchAllUsers">
         <v-icon >mdi-update</v-icon>
       </v-btn
       >
@@ -15,8 +15,8 @@
 
     <v-divider light> </v-divider>
 
-    <v-container v-if="getLoadingStatus">
-      <v-dialog v-model="getLoadingStatus" hide-overlay persistent width="300">
+    <v-container v-if="LoadinStatus">
+      <v-dialog v-model="LoadinStatus" hide-overlay persistent width="300">
         <v-card color="teal lighten-1" dark>
           <v-card-text>
             Loading data...
@@ -27,7 +27,7 @@
       </v-dialog>
     </v-container>
 
-    <v-container v-else-if="getErrorMsg">
+    <!-- <v-container v-else-if="getErrorMsg">
       <v-card
         flat
         class="pa-3 ma-2 text-center"
@@ -39,19 +39,20 @@
         </h1>
         <p>Error: {{ getErrorMsg }}</p>  
       </v-card>
-    </v-container>
+    </v-container> -->
 
     <v-container v-else class="my-5">
       <v-card
         hover
         flat
         class="pa-3 ma-2"
-        v-for="user in allUsers"
+        v-for="user in AllUsers"
         :key="user.id"
+        :class="{'grey lighten-1': !user.active}"
       >
-        <v-layout @click="userDetailDialog(user)">
+        <v-layout @click="editUser(user)">
           <v-flex xs2 class="text-center">
-            <v-avatar color="teal lighten-2">
+            <v-avatar color="teal lighten-2" :class="{'grey lighten-1': !user.active}">
               <v-icon dark>mdi-account-circle</v-icon>
             </v-avatar>
           </v-flex>
@@ -70,14 +71,14 @@
             </v-flex>
             <v-flex xs12 sm4 md2>
               <div class="caption grey--text">Active(?)</div>
-              <div>{{ user.admin == 1 ? "Yes" : "No" }}</div>
+              <div>{{ user.active == 1 ? "Yes" : "No" }}</div>
             </v-flex>
           </v-layout>
         </v-layout>
       </v-card>
     </v-container>
-    <NewUserDialog v-bind:showDiag="getNewuserDialogStatus" />
-    <UpdateUser v-bind:showDiag="userUpdateDialog" />
+    <NewUserDialog />
+    <UpdateUser />
   </v-app>
 </template>
 
@@ -86,6 +87,8 @@ import { mapGetters, mapActions } from "vuex";
 
 import NewUserDialog from "@/views/dialogs/NewUser";
 import UpdateUser from "@/views/dialogs/UpdateUser";
+
+import EventBus from '../EventBus'
 
 export default {
   name: "Users",
@@ -98,31 +101,22 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "allUsers",
-      "getErrorMsg",
-      "getLoadingStatus",
-      "getNewuserDialogStatus",
-      "userUpdateDialog",
+      "AllUsers",
+      "LoadinStatus"
     ]),
   },
   created() {
-    this.fetchUsers();
-    // axios.get('http://localhost:3060/users')
-    // .then(res => this.users = res.data)
-    // .catch(err => console.log(err))
+    this.fetchAllUsers();
   },
-  // beforeUpdate(){
-  //   axios.get('http://localhost:3060/users')
-  //     .then(res => this.users = res.data)
-  //     .catch(err => console.log(err))
-  //},
   methods: {
     ...mapActions([
-      "fetchUsers",
-      "newUserDialog",
-      "openConfirmationDiag",
-      "userDetailDialog",
+      "fetchAllUsers",
+      "editUser"
     ]),
+    openNewUserWindow: ()=>{
+      EventBus.$emit('NewUserFormWindow')
+    },
+    
   },
 };
 </script>

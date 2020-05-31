@@ -4,7 +4,6 @@
     <v-content class="mt-4 blue-grey lighten-5">
       <router-view></router-view>
     </v-content>
-    <DeleteConfirmationAlert />
     <!--<v-content class="mt-8">
       <Footer/>
     </v-content>-->
@@ -13,11 +12,10 @@
 
 <script>
 import Navbar from '@/components/Navbar'
-import DeleteConfirmationAlert from './views/dialogs/ConfirmDeleteAlert'
 
 export default {
   name: 'App',
-  components: { Navbar, DeleteConfirmationAlert},
+  components: { Navbar},
   data(){
     return{
       // eslint-disable-next-line vue/no-dupe-keys

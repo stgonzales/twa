@@ -2,132 +2,87 @@ import axios from 'axios'
 import EventBus from '../../EventBus'
 
 const state = {
-        users: [],
+        allusers: [],
         selectedUser: [],
-        loadingStatus: false,
-        error: null,
-        newUserDialog: false,
-        deactivateUserDialog: false,
-        userUpdateDialog: false
+        isLoading: false,
     }
 
 const getters = {
-        allUsers: state => {return state.users},
-        getErrorMsg: state => {return state.error},
-        getLoadingStatus: state => {return state.loadingStatus},
-        getNewuserDialogStatus: state => {return state.newUserDialog},
-        getdeactiveuserDialogStatus: state => {return state.deactivateUserDialog},
-        selectedUser: state => {return state.selectedUser},
-        userUpdateDialog: state => {return state.userUpdateDialog}
+        AllUsers: state => {return state.allusers},
+        LoadinStatus: state => {return state.loadingStatus},
+        currentUser: state => {return state.selectedUser},
     }
     
 const actions = {
-        async fetchUsers({commit}){
-            commit('SET_LOADING_STATUS', true)
-            await axios.get('http://localhost:3060/users')
+        async fetchAllUsers({commit}){
+            commit('UPDATE_LOADING_STATUS', true)
+            await axios.get('http://209.97.131.52:3000/users')
                 .then(res => {
-                    commit('SET_LOADING_STATUS', false)
-                    commit('SET_USERS', res.data)
+                    commit('UPDATE_LOADING_STATUS', false)
+                    commit('ALL_USERS_RESPONSE', res.data)
                 })
                 .catch(err => {
-                    commit('SET_ERROR', err)
-                    console.log(err)
+                    {return console.log(err)}
                 })
         },
 
-        async saveNewUser({commit, dispatch}, user){
-            commit('SET_LOADING_STATUS', true)
-            await axios.post('http://localhost:3060/new-user', user.data)
+        async saveNewUser({commit}, user){
+            commit('UPDATE_LOADING_STATUS', true)
+            await axios.post('http://209.97.131.52:3000/new-user', user.data)
                 .then((res) => {
                     if(res.data.message) {
-                        commit('SET_LOADING_STATUS', false)
+                        commit('UPDATE_LOADING_STATUS', false)
                         alert(res.data.message)
                         console.log([res, res.data.message])
                     }else{
                         alert(`User ${res.data.name} created!`)
-                        dispatch('newUserDialog')
-                        commit('SET_LOADING_STATUS', false)
-                        commit('ADD_NEWUSER', res.data)
-                        EventBus.$emit('cleanNewUserForm');
+                        commit('UPDATE_LOADING_STATUS', false)
+                        commit('ADD_NEWUSER', res.data);
+                        EventBus.$emit("NewUserFormWindow")
+                        EventBus.$emit("cleanNewUserForm")
+
                     }
                     
-                })
-                .catch(err => console.log(err))
-        },
-
-        async deleteUser({commit, dispatch}, userId){
-            axios.delete(`http://localhost:3060/delete-user/${userId}`)
-            .then(() => {
-                alert(`User deleted!`)
-                dispatch('fetchUsers')
-                dispatch('closeConfirmationDiag')
-                commit('CLEAN_SELECTED_USER')
-            })
-            .catch(err => console.log(err))
-        },
-
-        async updateUser({commit, dispatch}, user){
-            axios.put('http://localhost:3060/updt-user', user.data)
-                .then(()=>{
-                    alert(`User updated!`)
-                    dispatch('fetchUsers')
-                    dispatch('closeUserDetailDialog')
-                    commit('CLEAN_SELECTED_USER')
                 })
                 .catch(err => {return console.log(err)})
         },
 
-        newUserDialog({commit}){
-            commit('SET_NEWUSER_DIALOG_STATUS')
+        async updateUser({commit, dispatch}, user){
+            axios.put('http://209.97.131.52:3000/updt-user', user.data)
+                .then(()=>{
+                    alert(`User updated!`)
+                    dispatch('fetchAllUsers')
+                    EventBus.$emit('EditUserWindow')
+                    commit('CLEAN_SELECTED_USER')
+                })
+                .catch(err => {return console.error(err)})
         },
-
-        openConfirmationDiag({commit}, user){
-            commit('SET_DEACTIVATEUSER_DIALOG')
-            commit('SET_SELECTED_USER', user)
+        
+        editUser(context, user){
+            context.commit('SELECTED_USER', user)
         },
-
-        closeConfirmationDiag({commit}){
-            commit('SET_DEACTIVATEUSER_DIALOG')
-        },
-
-        userDetailDialog(context, user){
-            context.commit('SHOW_USERDETAIL_DIALOG')
-            context.commit('SET_SELECTED_USER', user)
-        },
-
-        closeUserDetailDialog({commit}){
-            commit('SHOW_USERDETAIL_DIALOG')
-        }
     }
 
 const mutations = {
-        SET_LOADING_STATUS: (state, status) => {
-            state.loadingStatus = status
+        UPDATE_LOADING_STATUS: (state, status) => {
+            state.isLoading = status
         },
-        SET_USERS: (state, users) => {
-            state.users = users
-        },
-        SET_ERROR: (state, erro) => {
-            state.error = erro
-        },
-        SET_NEWUSER_DIALOG_STATUS: (state) => {
-            state.newUserDialog = !state.newUserDialog
+        ALL_USERS_RESPONSE: (state, users) => {
+            state.allusers = users
         },
         ADD_NEWUSER: (state, user) => {
-            state.users.push(user)
-        },
-        SET_DEACTIVATEUSER_DIALOG: (state) => {
-            state.deactivateUserDialog = !state.deactivateUserDialog
-        },
-        SET_SELECTED_USER: (state, user) => {
-            state.selectedUser = user
+            state.allusers.push(user)
         },
         CLEAN_SELECTED_USER: (state) => {
             state.selectedUser = []
         },
-        SHOW_USERDETAIL_DIALOG: (state) => {
-            state.userUpdateDialog = !state.userUpdateDialog
-        }
+        SELECTED_USER: (state, user) => {
+            state.selectedUser = user
+            EventBus.$emit('EditUserWindow')
+        },
+        // SET_ERROR: (state, erro) => {
+        //     state.error = erro
+        // },
     }
 
 
