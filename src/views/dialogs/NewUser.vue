@@ -1,5 +1,56 @@
 <template>
-  <v-dialog
+<v-row justify="center">
+    <v-dialog 
+    v-model="isThisWindowActive" 
+    persistent 
+    max-width="600px">
+      
+      <v-card>
+        <v-card-title>
+          <span class="headline">New User</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field 
+                label="Name" 
+                placeholder="ex. John Doe"
+                v-model="data.name"></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field 
+                label="Email" 
+                placeholder="ex. john.doe@gmail.com"
+                v-model="data.email"></v-text-field>
+              </v-col>
+              
+              <v-col cols="12" sm="6">
+                <v-switch
+                    label="Admin?"
+                    v-model="data.admin"
+                    required
+                ></v-switch>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-switch
+                    label="Active?"
+                    v-model="data.active"
+                    required
+                ></v-switch>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="closeForm">Close</v-btn>
+          <v-btn color="blue darken-1" text @click="saveUser">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-row>
+  <!-- <v-dialog
     app
     v-model="isThisWindowActive"
     fullscreen
@@ -44,7 +95,7 @@
         </v-card-text>
       </v-content>
     </v-card>
-  </v-dialog>
+  </v-dialog> -->
 </template>
 
 <script>
