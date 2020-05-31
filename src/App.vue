@@ -21,7 +21,7 @@ export default {
       // eslint-disable-next-line vue/no-dupe-keys
       links:[
         {icon:'mdi-view-dashboard',text: 'Dashboard', route: '/'},
-        {icon:'mdi-view-list',text: 'Costumers', route: '/costumers'},
+        // {icon:'mdi-view-list',text: 'Costumers', route: '/costumers'},
         {icon:'mdi-account-circle',text: 'Users', route: '/users'},
         {icon: 'mdi-settings', text: 'Settings', route: '/settings'}
       ]

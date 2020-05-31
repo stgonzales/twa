@@ -15,6 +15,7 @@ const getters = {
     
 const actions = {
         async fetchAllUsers({commit}){
+
             commit('UPDATE_LOADING_STATUS', true)
             await axios.get('http://209.97.131.52:3000/users')
                 .then(res => {

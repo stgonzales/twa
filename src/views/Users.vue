@@ -3,14 +3,22 @@
     <h1 class="subheading pb-3 ml-4 text-center">Users</h1>
     <v-divider light> </v-divider>
 
-    <v-container class="my-1">
-      <v-btn color="teal lighten-1" class="white--text" @click="openNewUserWindow">
-        <v-icon>mdi-plus</v-icon> New User</v-btn
+    <v-container class="my-0">
+      <v-btn small dark color="teal lighten-1" class="white--text" @click="openNewUserWindow">
+        <v-icon class="mr-2">mdi-plus</v-icon> New User</v-btn
       >
-      <v-btn fab small dark color="teal lighten-1" class="mx-3" @click="fetchAllUsers">
-        <v-icon >mdi-update</v-icon>
+      <v-btn  small dark color="teal lighten-1" class="mx-3" @click="fetchAllUsers">
+        <v-icon class="mr-2">mdi-update</v-icon> Update List
       </v-btn
       >
+      <v-col>
+        <v-text-field
+          label="Search User"
+          placeholder="ex. John Doe"
+          outlined
+          v-model="search"
+        ></v-text-field>
+      </v-col>
     </v-container>
 
     <v-divider light> </v-divider>
@@ -46,7 +54,7 @@
         hover
         flat
         class="pa-3 ma-2"
-        v-for="user in AllUsers"
+        v-for="user in filteredUserList"
         :key="user.id"
         :class="{'grey lighten-1': !user.active}"
       >
@@ -93,7 +101,9 @@ import EventBus from '../EventBus'
 export default {
   name: "Users",
   data() {
-    return {};
+    return {
+      search: ''
+    }
   },
   components: {
     NewUserDialog,
@@ -104,6 +114,9 @@ export default {
       "AllUsers",
       "LoadinStatus"
     ]),
+    filteredUserList() {
+      return this.AllUsers.filter(user => user.name.toLowerCase().includes(this.search.toLowerCase()))
+    }
   },
   created() {
     this.fetchAllUsers();
@@ -116,7 +129,6 @@ export default {
     openNewUserWindow: ()=>{
       EventBus.$emit('NewUserFormWindow')
     },
-    
   },
 };
 </script>
