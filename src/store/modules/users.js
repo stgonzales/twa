@@ -81,9 +81,6 @@ const mutations = {
             state.selectedUser = user
             EventBus.$emit('EditUserWindow')
         },
-        // SET_ERROR: (state, erro) => {
-        //     state.error = erro
-        // },
     }
 
 

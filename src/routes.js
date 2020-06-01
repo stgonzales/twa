@@ -3,8 +3,8 @@ import VueRouter from 'vue-router'
 
 import Dashboard from './views/Dashboard'
 import Users from './views/Users'
+import Customers from './views/Customers'
 // import Settings from './views/Settings'
-// import Costumers from './views/Costumers'
 // import Login from './components/Login'
 
 Vue.use(VueRouter)
@@ -26,7 +26,15 @@ let router = new VueRouter ({
     meta:{
       requiresAuth: true
     }
-  }
+  },
+  {
+    path:'/Customers', 
+    name: 'Customers', 
+    component: Customers,
+    meta:{
+      requiresAuth: true
+    }
+  },
   // {
   //   path:'/settings', 
   //   name: 'Settings', 
@@ -35,14 +43,7 @@ let router = new VueRouter ({
   //     requiresAuth: true
   //   }
   // },
-  // {
-  //   path:'/costumers', 
-  //   name: 'Costumers', 
-  //   component: Costumers,
-  //   meta:{
-  //     requiresAuth: true
-  //   }
-  // },
+  // 
   // {
   //   path:'/login', 
   //   name: 'Login', 

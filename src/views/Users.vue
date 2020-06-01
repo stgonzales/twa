@@ -17,6 +17,7 @@
           placeholder="ex. John Doe"
           outlined
           v-model="search"
+          class="font-weight-light"
         ></v-text-field>
       </v-col>
     </v-container>
@@ -35,19 +36,16 @@
       </v-dialog>
     </v-container>
 
-    <!-- <v-container v-else-if="getErrorMsg">
+    <v-container v-if="filteredUserList.length == 0">
       <v-card
         flat
         class="pa-3 ma-2 text-center"
-        v-for="user in allUsers"
-        :key="user.id"
       >
-        <h1>
-          A error ocurred while fetching data, please check the console.
-        </h1>
-        <p>Error: {{ getErrorMsg }}</p>  
+        <h5>
+          No Users :(
+        </h5>
       </v-card>
-    </v-container> -->
+    </v-container>
 
     <v-container v-else class="my-5">
       <v-card
